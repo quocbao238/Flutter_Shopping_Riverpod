@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "240676840960",
+    "project_id": "flutter-shopping-riverpod",
+    "storage_bucket": "flutter-shopping-riverpod.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:240676840960:android:dea83847c56a465ac85ae5",
+        "android_client_info": {
+          "package_name": "com.example.flutter_shopping_riverpod"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "240676840960-k73a9u8v55j9b2rh3ofr75otvmbgibqk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.flutter_shopping_riverpod",
+            "certificate_hash": "b01d95ea4998a764342f1866e311c7f2f972ef77"
+          }
+        },
+        {
+          "client_id": "240676840960-aq4ef9d8cr7mh2rjfj8igosrmutk9eef.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCphSENN_-4YaCjU7TvT7fstIPp5zQxmCE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "240676840960-aq4ef9d8cr7mh2rjfj8igosrmutk9eef.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
