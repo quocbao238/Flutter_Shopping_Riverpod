@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_shopping_riverpod/general_providers.dart';
 import 'package:flutter_shopping_riverpod/models/item_model.dart';
@@ -12,7 +11,7 @@ class HomePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authController = ref.watch(authControllerProvider);
     final exceptionController = ref.watch(itemListExceptionProvider);
-
+    print("Rebuild HomePage");
     if (exceptionController != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -24,7 +23,8 @@ class HomePage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Shopping List"),
+        title:
+            Text(authController == null ? "Login Firebase" : "Shopping List"),
         actions: [
           if (authController != null)
             IconButton(
@@ -40,7 +40,26 @@ class HomePage extends ConsumerWidget {
         },
         child: const Icon(Icons.add),
       ),
-      body: const ItemList(),
+      body: authController == null
+          ? Center(
+              child: InkWell(
+                onTap: () {
+                  ref.read(authControllerProvider.notifier).login();
+                },
+                child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(18),
+                        color: Theme.of(context).primaryColor),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 12, horizontal: 64),
+                    child: const Text(
+                      "Login",
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    )),
+              ),
+            )
+          : const ItemList(),
     );
   }
 }
@@ -108,6 +127,7 @@ class ItemList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    print("Rebuild ItemList");
     final itemListState = ref.watch(itemListControllerProvider);
     return itemListState.when(
         data: (_lstItem) => _lstItem.isEmpty
@@ -152,6 +172,8 @@ class ItemListError extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    print("Rebuild ItemListError");
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

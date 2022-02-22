@@ -3,8 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_shopping_riverpod/general_providers.dart';
 
-
-
 class AuthController extends StateNotifier<User?> {
   final Reader _reader;
 
@@ -26,7 +24,11 @@ class AuthController extends StateNotifier<User?> {
 
   void appStated() async {
     final user = _reader(authRepositoryProvider).getCurrentUser();
-    if (user == null) await _reader(authRepositoryProvider).signInAnonymous();
+    // if (user == null) await _reader(authRepositoryProvider).signInAnonymous();
+  }
+
+  void login() async {
+    await _reader(authRepositoryProvider).signInAnonymous();
   }
 
   void signOut() async {
