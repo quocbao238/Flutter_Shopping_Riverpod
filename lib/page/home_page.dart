@@ -40,22 +40,7 @@ class HomePage extends ConsumerWidget {
         },
         child: const Icon(Icons.add),
       ),
-      // body:
-      // ProviderListener(
-      //   provider: itemListExceptionProvider,
-      //   onChange: (
-      //     BuildContext context,
-      //     StateController<CustomException?>  customException.state,
-      //   ) {
-      //     ScaffoldMessenger.of(context).showSnackBar(
-      //       SnackBar(
-      //         backgroundColor: Colors.red,
-      //         content: Text(customException!.message!),
-      //       ),
-      //     );
-      //   },
-      //   child:  Container()
-      // ),
+      body: const ItemList(),
     );
   }
 }
@@ -63,16 +48,18 @@ class HomePage extends ConsumerWidget {
 class AddItemDialog extends ConsumerWidget {
   final Item item;
   const AddItemDialog({Key? key, required this.item}) : super(key: key);
-  bool get isUpdating => item.id == null;
+  bool get isUpdating => item.id != null;
 
   static void show(BuildContext context, Item item) {
     showDialog(
-        context: context, builder: (context) => AddItemDialog(item: item));
+      context: context,
+      builder: (context) => AddItemDialog(item: item),
+    );
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final textEditController = useTextEditingController(text: item.name);
+    final textEditController = TextEditingController(text: item.name);
     return Dialog(
       child: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -93,6 +80,7 @@ class AddItemDialog extends ConsumerWidget {
                           ? Colors.orange
                           : Theme.of(context).primaryColor),
                   onPressed: () {
+                    Navigator.of(context).pop();
                     isUpdating
                         ? ref
                             .read(itemListControllerProvider.notifier)
@@ -113,6 +101,8 @@ class AddItemDialog extends ConsumerWidget {
   }
 }
 
+// final currentItem = Provider<Item>((_) => throw UnimplementedError());
+
 class ItemList extends ConsumerWidget {
   const ItemList({Key? key}) : super(key: key);
 
@@ -120,29 +110,27 @@ class ItemList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final itemListState = ref.watch(itemListControllerProvider);
     return itemListState.when(
-        data: (_items) => _items.isEmpty
+        data: (_lstItem) => _lstItem.isEmpty
             ? const Center(child: Text("Tap + to add item"))
             : ListView.builder(
-                itemCount: _items.length,
+                itemCount: _lstItem.length,
                 itemBuilder: (context, index) {
-                  Item _item = _items[index];
+                  Item _item = _lstItem[index];
                   return ListTile(
-                      key: ValueKey(_item.id),
-                      title: Text(_item.name),
-                      trailing: Checkbox(
+                    key: ValueKey(_item.id),
+                    title: Text(_item.name),
+                    trailing: Checkbox(
                         value: _item.obtained,
-                        onChanged: (value) => ref
+                        onChanged: (val) => ref
                             .read(itemListControllerProvider.notifier)
                             .updateItem(
-                              itemUpdate: _item.copyWith(obtained: value!),
-                            ),
-                      ),
-                      onTap: () {
-                        AddItemDialog.show(context, _item);
-                      },
-                      onLongPress: () => ref
-                          .read(itemListControllerProvider.notifier)
-                          .deleteItem(itemId: _item.id!));
+                                itemUpdate:
+                                    _item.copyWith(obtained: !_item.obtained))),
+                    onTap: () => AddItemDialog.show(context, _item),
+                    onLongPress: () => ref
+                        .read(itemListControllerProvider.notifier)
+                        .deleteItem(itemId: _item.id!),
+                  );
                 },
               ),
         error: (error, _) => ItemListError(

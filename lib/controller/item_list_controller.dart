@@ -34,7 +34,7 @@ class ItemListController extends StateNotifier<AsyncValue<List<Item>>> {
       final itemId = await _reader(itemRepositoryProvider)
           .createItem(userId: _userId!, item: item);
       state.whenData((value) =>
-          state = AsyncValue.data(value..add(item.copyWith(id: itemId.id))));
+          state = AsyncValue.data(value..add(item.copyWith(id: itemId))));
     } on CustomException catch (e) {
       _reader(itemListExceptionProvider.notifier).state = e;
     }

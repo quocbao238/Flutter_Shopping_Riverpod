@@ -18,9 +18,10 @@ abstract class Item implements _$Item {
 
   factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);
 
-  factory Item.fromDocument(DocumentSnapshot<Item> documentSnapshot) {
+  factory Item.fromDocument(
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot) {
     final data = documentSnapshot.data()!;
-    return data.copyWith(id: documentSnapshot.id);
+    return Item.fromJson(data).copyWith(id: documentSnapshot.id);
   }
 
   Map<String, dynamic> toDocument() => toJson()..remove('id');

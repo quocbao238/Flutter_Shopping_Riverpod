@@ -29,6 +29,12 @@ final authControllerProvider =
 final itemRepositoryProvider =
     Provider<ItemRepository>((ref) => ItemRepository(ref.read));
 
+final itemListControllerProvider =
+    StateNotifierProvider<ItemListController, AsyncValue<List<Item>>>((ref) {
+  final user = ref.watch(authControllerProvider);
+  return ItemListController(ref.read, user?.uid);
+});
+
 final itemListExceptionProvider = StateProvider<CustomException?>((ref) {
   return null;
 });
@@ -38,8 +44,3 @@ final itemListExceptionProvider = StateProvider<CustomException?>((ref) {
 //   return null;
 // });
 
-final itemListControllerProvider =
-    StateNotifierProvider<ItemListController, AsyncValue<List<Item>>>((ref) {
-  final user = ref.watch(authControllerProvider);
-  return ItemListController(ref.read, user?.uid);
-});

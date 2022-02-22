@@ -8,7 +8,7 @@ import '../models/item_model.dart';
 
 abstract class BaseItemRepository {
   Future<List<Item>> retriveItems({required String userId});
-  Future<Item> createItem({required String userId, required Item item});
+  Future<String> createItem({required String userId, required Item item});
   Future<bool> updateItem({required String userId, required Item item});
   Future<bool> deleteItem({required String userId, required String itemId});
 }
@@ -20,17 +20,33 @@ class ItemRepository implements BaseItemRepository {
   @override
   Future<List<Item>> retriveItems({required String userId}) async {
     try {
-      final snap =
-          await _reader(firebaseFirestoreProvider).userListRef(userId).get();
-      return snap.docs.map((e) => Item.fromJson(e.data())).toList();
+      final snap = await _reader(firebaseFirestoreProvider)
+          .collection('lists')
+          .doc(userId)
+          .collection('userList')
+          .withConverter<Item>(
+              fromFirestore: (snapshot, _) => Item.fromDocument(snapshot),
+              toFirestore: (model, _) => model.toJson())
+          .get();
+      return snap.docs.map((e) => e.data()).toList();
     } on FirebaseException catch (e) {
       throw CustomException(message: e.message);
     }
   }
 
   @override
-  Future<Item> createItem({required String userId, required Item item}) {
-    throw UnimplementedError();
+  Future<String> createItem({
+    required String userId,
+    required Item item,
+  }) async {
+    try {
+      final docRef = await _reader(firebaseFirestoreProvider)
+          .userListRef(userId)
+          .add(item.toDocument());
+      return docRef.id;
+    } on FirebaseException catch (e) {
+      throw CustomException(message: e.message);
+    }
   }
 
   @override
